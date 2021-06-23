@@ -39,7 +39,7 @@ cd ~/programming/fiesta-helpers/
 # Get run times
 
 `parse.awk` can be used to extract run-times from a slurm output consisting of many runs.
-The output is formatted as a python list so results can easily be plotted.
+The output is formatted as a python list so results can be easily plotted.
 
 ## Example
 

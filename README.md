@@ -1,10 +1,10 @@
 # fiesta-helpers
 
-Convenience scripts for building and running FIESTA. These are the scripts I have been using to help build/run FIESTA on Xena to test run-times after source modifications and with different implementation of MPI.
+Convenience scripts for building and running FIESTA. These are the scripts I have been using to help build/run FIESTA on Xena to test run-times after source modifications and with different implementations of MPI.
 
 # Build script
 
-The build script will set up an environment with Spack and then build fiesta into a directory named build-<env>-<commit-hash>.
+The build script will set up an environment with Spack and then build fiesta into a directory named `build-<env>-<commit-hash>`.
 
 ## Usage
 
@@ -39,7 +39,7 @@ cd ~/programming/fiesta-helpers/
 # Get run times
 
 `parse.awk` can be used to extract run-times from a slurm output consisting of many runs.
-The output is formatted as a python list so results can easily be plotted.
+The output is formatted as a python list so results can be easily plotted.
 
 ## Example
 

@@ -1,6 +1,6 @@
 # fiesta-helpers
 
-Convenience scripts for building and running FIESTA. These are the scripts I have been using to help build/run FIESTA on Xena to test run-times after source modifications and with different implementation of MPI.
+Convenience scripts for building and running FIESTA. These are the scripts I have been using to help build/run FIESTA on Xena to test run-times after source modifications and with different implementations of MPI.
 
 # Build script
 

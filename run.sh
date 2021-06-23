@@ -25,12 +25,17 @@ spack load cmake cuda hdf5 mpi || exit 1
 
 # Run
 cd $TESTDIR
-export OMPI_MCA_fs_ufs_lock_algorithm=1
 # 4 nodes with 1 gpu each _should_ work most anywhere
 for i in $(seq 1 $RUNS); do
 	echo "------ START RUN $i ------"
 	if [ $ENV = "openmpi" ]; then
+		export OMPI_MCA_fs_ufs_lock_algorithm=1
 		mpirun --mca btl '^openib' -n 4 $FIESTABIN ./fiesta.lua --kokkos-num-devices=1
+	elif [ $ENV = "mvapich2" ]; then
+		export MV2_USE_CUDA=1
+		export MV2_USE_RDMA_CM=0
+		export MV2_HOMOGENEOUS_CLUSTER=1
+		mpirun -n 4 $FIESTABIN ./fiesta.lua --kokkos-num-devices=1
 	else
 		mpirun -n 4 $FIESTABIN ./fiesta.lua --kokkos-num-devices=1
 	fi

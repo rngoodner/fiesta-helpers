@@ -4,7 +4,7 @@ Convenience scripts for building and running FIESTA. These are the scripts I hav
 
 # Build script
 
-The build script will set up an environment with Spack and then build fiesta into a directory named build-<env>-<commit-hash>.
+The build script will set up an environment with Spack and then build fiesta into a directory named `build-<env>-<commit-hash>`.
 
 ## Usage
 

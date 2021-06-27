@@ -15,20 +15,20 @@ export GCCVER=9.4.0
 # Spack
 module purge
 # only install gcc if not found      
-spack find gcc@$GCCVER && spack find gcc@$GCCVER | grep "gcc@$GCCVER" || spack install gcc@$GCCVER
-spack load --first gcc@$GCCVER
+spack find gcc@${GCCVER} && spack find gcc@${GCCVER} | grep "gcc@${GCCVER}" || spack install gcc@${GCCVER}
+spack load --first gcc@${GCCVER}
 spack compiler find
-spack env activate -d ./env-$ENV || exit 1
+spack env activate -d ./env-${ENV} || exit 1
 spack concretize -f || exit 1
 spack install || exit 1
 spack load cmake cuda hdf5 mpi || exit 1
 
 # Git
-cd $PROJROOT
-git checkout $COMMIT || exit 1
+cd ${PROJROOT}
+git checkout ${COMMIT} || exit 1
 
 # CMake
-rm -rf ./build-$ENV-$COMMIT/CMakeCache.txt ./build-$ENV-$COMMIT/CMakeFiles/
-mkdir -p ./build-$ENV-$COMMIT
-cd build-$ENV-$COMMIT
+rm -rf ./build-${ENV}-${COMMIT}/CMakeCache.txt ./build-${ENV}-${COMMIT}/CMakeFiles/
+mkdir -p ./build-${ENV}-${COMMIT}
+cd build-${ENV}-${COMMIT}
 cmake .. -DCUDA=on && make -j

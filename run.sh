@@ -15,29 +15,32 @@ export GCCVER=9.4.0
 # Spack
 module purge
 # only install gcc if not found      
-spack find gcc@$GCCVER && spack find gcc@$GCCVER | grep "gcc@$GCCVER" || spack install gcc@$GCCVER
-spack load --first gcc@$GCCVER
+spack find gcc@${GCCVER} && spack find gcc@${GCCVER} | grep "gcc@${GCCVER}" || spack install gcc@${GCCVER}
+spack load --first gcc@${GCCVER}
 spack compiler find
-spack env activate -d ./env-$ENV || exit 1
+spack env activate -d ./env-${ENV} || exit 1
 spack concretize -f || exit 1
 spack install || exit 1
 spack load cmake cuda hdf5 mpi || exit 1
 
 # Run
-cd $TESTDIR
+export TESTDIRCOPY=./$(basename ${TESTDIR})_${ENV}_$(date --iso-8601=seconds)
+cp -r ${TESTDIR} ${TESTDIRCOPY}
+cd ${TESTDIRCOPY}
 # 4 nodes with 1 gpu each _should_ work most anywhere
 for i in $(seq 1 $RUNS); do
-	echo "------ START RUN $i ------"
+	echo "------ START RUN ${i} ------"
 	if [ $ENV = "openmpi" ]; then
 		export OMPI_MCA_fs_ufs_lock_algorithm=1
-		mpirun --mca btl '^openib' -n 4 $FIESTABIN ./fiesta.lua --kokkos-num-devices=1
+		mpirun --mca btl '^openib' -n 4 ${FIESTABIN} ./fiesta.lua --kokkos-num-devices=1
 	elif [ $ENV = "mvapich2" ]; then
 		export MV2_USE_CUDA=1
 		export MV2_USE_RDMA_CM=0
 		export MV2_HOMOGENEOUS_CLUSTER=1
-		mpirun -n 4 $FIESTABIN ./fiesta.lua --kokkos-num-devices=1
+		export MV2_CUDA_IPC=1
+		mpiexec -n 4  ${FIESTABIN} ./fiesta.lua --kokkos-num-devices=1
 	else
-		mpirun -n 4 $FIESTABIN ./fiesta.lua --kokkos-num-devices=1
+		mpirun -n 4 ${FIESTABIN} ./fiesta.lua --kokkos-num-devices=1
 	fi
-	echo "------ RUN $i COMPLETE ------"
+	echo "------ RUN ${i} COMPLETE ------"
 done

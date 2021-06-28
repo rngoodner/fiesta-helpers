@@ -13,7 +13,7 @@ export ENV=$3
 export GCCVER=9.4.0
 
 # Spack
-module purge
+module --force purge
 # only install gcc if not found      
 spack find gcc@${GCCVER} && spack find gcc@${GCCVER} | grep "gcc@${GCCVER}" || spack install gcc@${GCCVER}
 spack load --first gcc@${GCCVER}

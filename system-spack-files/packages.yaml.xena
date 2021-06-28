@@ -1,0 +1,8 @@
+packages:
+  intel-mpi:
+    buildable: True
+  mvapich2-gdr:
+    externals:
+    - spec: mvapich2-gdr@2.3.5
+      prefix: /users/rgoodner/opt/mvapich2/gdr/2.3.5/mcast/no-openacc/cuda11.0/mofed5.0/slurm/gnu4.8.5/
+      buildable: False

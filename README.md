@@ -14,7 +14,7 @@ Evironment files can be found in `env-files/`.
 
 ## Example
 
-./build.sh ../cup-ecs-fiesta ./env-files/openmpi
+`./build.sh ../cup-ecs-fiesta ./env-files/openmpi`
 
 # Run script
 

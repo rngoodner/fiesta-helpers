@@ -2,7 +2,7 @@
 
 # Check for correct # of arguments
 if test "$#" -ne 3; then
-	echo "Usage: ./build.sh <path-to-fiesta-clone> <commit-hash> <env-type>"
+	echo "Usage: ./build.sh <path-to-fiesta-clone> <commit-hash> <env-file-to-source>"
 	exit 1
 fi
 
@@ -10,25 +10,30 @@ fi
 export PROJROOT=$1
 export COMMIT=$2
 export ENV=$3
-export GCCVER=9.4.0
 
-# Spack
-module --force purge
-# only install gcc if not found      
-spack find gcc@${GCCVER} && spack find gcc@${GCCVER} | grep "gcc@${GCCVER}" || spack install gcc@${GCCVER}
-spack load --first gcc@${GCCVER}
-spack compiler find
-spack env activate -d ./env-${ENV} || exit 1
-spack concretize -f || exit 1
-spack install || exit 1
-spack load cmake cuda hdf5 mpi || exit 1
+# Setup environment
+. ${ENV} || exit 1
+module list
 
 # Git
 cd ${PROJROOT}
 git checkout ${COMMIT} || exit 1
 
 # CMake
-rm -rf ./build-${ENV}-${COMMIT}/CMakeCache.txt ./build-${ENV}-${COMMIT}/CMakeFiles/
-mkdir -p ./build-${ENV}-${COMMIT}
-cd build-${ENV}-${COMMIT}
-cmake .. -DCUDA=on && make -j
+export BDIR=build-$(basename ${ENV})-${COMMIT}
+rm -vrf ./${BDIR}
+mkdir -p ./${BDIR}
+cd ${BDIR}
+printenv
+
+if [[ $ENV == *"lassen"* ]]; then
+	cmake .. -DCUDA=ON\
+	 -DMPI_ASSUME_NO_BUILTIN_MPI=ON\
+	 -DMPI_C_COMPILER=mpicc\
+	 -DMPI_CXX_COMPILER=mpicxx\
+	 -DMPI_Fortran_COMPILER=mpif90\
+	 -DKokkos_ARCH_VOLTA70=ON\
+	 && make -j8
+else
+	cmake .. -DCUDA=ON && make -j8
+fi

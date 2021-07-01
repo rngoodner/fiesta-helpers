@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#openmpi
+
+export GCCVER=9.4.0
+module --force purge
+spack find gcc@${GCCVER} && spack find gcc@${GCCVER} | grep "gcc@${GCCVER}" || spack install -j 8 gcc@${GCCVER}
+spack load --first gcc@${GCCVER}
+spack compiler find
+spack env activate -d ./spack-environments/openmpi || exit 1
+spack concretize -f || exit 1
+spack install -j 8 || exit 1
+spack load cmake cuda hdf5 mpi || exit 1
+export OMPI_MCA_fs_ufs_lock_algorithm=1
+export OMPI_MCA_btl_openib_allow_ib=1
+

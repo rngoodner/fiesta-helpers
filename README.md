@@ -8,9 +8,13 @@ The build script will set up an environment with Spack and then build fiesta int
 
 ## Usage
 
-`./build.sh <path-to-fiesta-clone> <commit-hash> <env-type>`
+`./build.sh <path-to-fiesta-clone> <commit-hash> <env-file-to-source>`
 
-Currently supported env-types are: `openmpi`, `mpich`, and `mvapich2`.
+Evironment files can be found in `env-files/`.
+
+## Example
+
+./build.sh ../cup-ecs-fiesta ./env-files/openmpi
 
 # Run script
 
@@ -18,23 +22,11 @@ The run script will load the spack environment and the run a specified test a sp
 
 ## Usage
 
-`./run.sh <path-to-fiesta-binary> <path-to-test-dir> <env-type> <number-of-runs>`
+`./run.sh <path-to-fiesta-binary> <path-to-test-dir> <env-file-to-source> <scheduler command> <gpus-per-node> <number-of-runs>`
 
-### Slurm script example
+## Example
 
-```
-#!/bin/bash
-#SBATCH --job-name=openmpi-host
-#SBATCH --output=./log-%x.%J.out
-#SBATCH --error=./log-%x.%J.err
-#SBATCH --nodes=4
-#SBATCH --time=10:00:00
-#SBATCH --partition=singleGPU
-#SBATCH --gres=gpu:1
-
-cd ~/programming/fiesta-helpers/
-./run.sh ~/programming/cup-ecs-fiesta/build-openmpi-master/fiesta ./idexp3dterrain-host/ openmpi 25
-```
+`./run.sh ../cup-ecs-fiesta/build-mvapich2-lassen-d8f360b/fiesta ./idexp3dterrain-gpu-type ./env-files/mvapich2-lassen "lrun -N4 -T1" 1 25`
 
 # Get run times
 

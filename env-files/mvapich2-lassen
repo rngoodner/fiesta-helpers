@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# mvapich2 lassen
+
+export GCCVER=8.3.1
+
+module --force purge
+spack unload --all
+module load gcc/8.3.1 lrun/2020.03.05 || exit 1
+spack compiler find
+spack load --first gcc@${GCCVER}
+spack env activate -d ./spack-environments/mvapich2-lassen || exit 1
+spack concretize -f
+spack install -j 8
+spack load cmake cuda mvapich2 pmix libevent hwloc hdf5 || exit 1
+export CC=mpicc
+export CXX=mpicxx
+export FC=mpif90
+
+unset OPAL_PREFIX
+unset MPI_ROOT
+export MV2_ENABLE_AFFINITY=0
+export MV2_USE_GDRCOPY=1
+export MV2_GPUDIRECT_GDRCOPY_LIB=/usr/lib64/libgdrapi.so
+export MV2_USE_CUDA=1
+export MV2_USE_GDR=1
+export MV2_CPU_BINDING_POLICY=hybrid
+export MV2_HYBRID_BINDING_POLICY=spread
+export MV2_MPI_LIB=/usr/tce/packages/mvapich2/osu/mvapich2-2021.05.28-cuda-11.1.1/xl/lib64/libmpi.so
+export MV2_USE_LAZY_MEM_UNREGISTER=2
+export OMPI_LD_PRELOAD_PREPEND=/usr/tce/packages/mvapich2/osu/mvapich2-2021.05.28-cuda-11.1.1/xl/lib64/libmpi.so
+export MV2_USE_RDMA_CM=0
+export MV2_SMP_QUEUE_LENGTH=1048580
+export MV2_HOMOGENEOUS_CLUSTER=1
